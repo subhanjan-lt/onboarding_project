@@ -1,0 +1,18 @@
+const auth = require('../middleware/auth');
+const { LoginService } = require('../services/login_service');
+
+class LoginHandler {
+    static init = function(router) {
+        router.post('/user/login', async function(req, res) {
+            await LoginService.login(req, res);
+        });
+
+        router.post('/user/logout', auth, async function (req, res) {
+            await LoginService.logout(req, res);
+        });
+    }
+}
+
+module.exports = {
+    LoginHandler: LoginHandler
+};
