@@ -29,13 +29,20 @@ class UserService{
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
-
-            const encrypted_password = null;
-            if (req.body.password) encrypted_password = await bcrypt.hash(req.body.password, 10);
-            const updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {
-                username: req.body.username,
-                password: encrypted_password
-            });
+            let encrypted_password = null, updatedUser = null;
+            if (req.body.password) {
+                encrypted_password = await bcrypt.hash(req.body.password, 10);
+                updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {
+                    username: req.body.username,
+                    password: encrypted_password, 
+                    updated_by: req.user.user_id
+                });
+            } else {
+                updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {
+                    username: req.body.username,
+                    updated_by: req.user.user_id
+                });
+            }
             return res.status(200).json(updatedUser);
         } catch (err) {
             console.log(err);
@@ -47,7 +54,10 @@ class UserService{
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
 
-            const updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {active: false});
+            const updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {
+                active: false, 
+                updated_by: req.user.user_id
+            });
             return res.status(200).json(updatedUser);
         } catch (err) {
             console.log(err);
