@@ -48,13 +48,11 @@ class LoginService {
     static logout = async function (req, res) {
         try {
             const token = req.headers["x-access-token"];
-            if (token) {
-                const currSession = await login_history_model.findOneAndUpdate({secret_key: token}, {logout_time: Date.now() / 1000});
-                if (!currSession) {
-                    return res.status(400).send('User is not logged into system, please login first');
-                }
-                else return res.status(200).send({success: true});
+            const currSession = await login_history_model.findOneAndUpdate({secret_key: token}, {logout_time: Date.now() / 1000});
+            if (!currSession) {
+                return res.status(400).send('User is not logged into system, please login first');
             }
+            else return res.status(200).send({success: true});
         } catch (err) {
             console.log(err);
         }
