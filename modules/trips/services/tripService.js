@@ -1,6 +1,6 @@
 const trips_model = require('../models/trips');
-const users_model = require('../../Users/models/users');
-const rate_card_model = require('../../RateCard/models/rate_card');
+const users_model = require('../../users/models/users');
+const rate_card_model = require('../../rateCard/models/rateCard');
 
 class TripService {
     static create = async function (req, res) {

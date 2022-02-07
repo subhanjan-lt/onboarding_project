@@ -1,10 +1,10 @@
 const http = require("http");
 const { app, express } = require("./app");
-const { PODHandler } = require("./POD/handlers/pod_handler");
-const { RateCardHandler } = require("./RateCard/handlers/rate_card_handler");
-const { TripHandler } = require("./Trips/handlers/trip_handler");
-const { LoginHandler } = require("./Users/handlers/login_handler");
-const { UserHandler } = require("./Users/handlers/user_handler");
+const { PODHandler } = require("./modules/pod/handlers/podHandler");
+const { RateCardHandler } = require("./modules/rateCard/handlers/rateCardHandler");
+const { TripHandler } = require("./modules/trips/handlers/tripHandler");
+const { LoginHandler } = require("./modules/users/handlers/loginHandler");
+const { UserHandler } = require("./modules/users/handlers/userHandler");
 // const server = http.createServer(app);
 const router = express.Router();
 

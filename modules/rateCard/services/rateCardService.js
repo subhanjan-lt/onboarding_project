@@ -1,4 +1,4 @@
-const rate_card_model = require('../models/rate_card');
+const rate_card_model = require('../models/rateCard');
 
 class RateCardService {
     static create = async function (req, res) {

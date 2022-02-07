@@ -1,5 +1,5 @@
-const auth = require('../../Users/middleware/auth');
-const { TripService } = require('../services/trip_service');
+const auth = require('../../../core/middleware/auth');
+const { TripService } = require('../services/tripService');
 
 class TripHandler {
     static init = function(router) {

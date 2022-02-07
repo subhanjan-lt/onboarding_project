@@ -1,5 +1,5 @@
-const auth = require('../middleware/auth');
-const { UserService } = require('../services/user_service');
+const auth = require('../../../core/middleware/auth');
+const { UserService } = require('../services/userService');
 
 class UserHandler {
     static init = function(router) {

@@ -1,4 +1,4 @@
-const login_history_model = require("../../LoginHistory/models/login_history");
+const login_history_model = require("../../modules/loginHistory/models/loginHistory");
 const jwt = require('jsonwebtoken');
 const config = process.env;
 

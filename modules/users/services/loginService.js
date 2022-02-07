@@ -1,5 +1,5 @@
 const users_model = require('../models/users');
-const login_history_model = require('../../LoginHistory/models/login_history');
+const login_history_model = require('../../loginHistory/models/loginHistory');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 

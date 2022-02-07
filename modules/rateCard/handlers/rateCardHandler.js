@@ -1,5 +1,5 @@
-const auth = require('../../Users/middleware/auth');
-const { RateCardService } = require('../services/rate_card_service');
+const auth = require('../../../core/middleware/auth');
+const { RateCardService } = require('../services/rateCardService');
 
 
 class RateCardHandler {
