@@ -5,10 +5,12 @@ const pod_model = require('../models/pod');
 const rate_card_model = require('../../rateCard/models/rateCard');
 const payment_requests_model = require('../../paymentRequests/models/paymentRequests');
 const { PODService } = require('../services/podService');
+const multer  = require('multer')
+const upload = multer({ dest: '/Users/lt/Documents/onboarding_project/modules/pod/uploads' })
 
 class PODHandler {
     static init = function (router) {
-        router.put('/pod/create', auth, async function (req, res) {
+        router.put('/pod/create', [auth, upload.single('pod')], async function (req, res) {
             await PODService.create(req, res);
         });
 

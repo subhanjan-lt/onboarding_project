@@ -5,6 +5,9 @@ const { RateCardHandler } = require("./modules/rateCard/handlers/rateCardHandler
 const { TripHandler } = require("./modules/trips/handlers/tripHandler");
 const { LoginHandler } = require("./modules/users/handlers/loginHandler");
 const { UserHandler } = require("./modules/users/handlers/userHandler");
+const Queue = require('bull');
+const { PaymentRequestsJob } = require("./core/backgroundJobs/paymentRequestsJob");
+
 // const server = http.createServer(app);
 const router = express.Router();
 
@@ -17,6 +20,19 @@ UserHandler.init(router);
 RateCardHandler.init(router);
 TripHandler.init(router);
 PODHandler.init(router);
+
+//queueing background jobs
+const processPaymentRequestsQueue = new Queue('processPaymentRequests');
+processPaymentRequestsQueue.on('completed', (job, result) => {
+    console.log(`Job completed with result ${result}`);
+});
+processPaymentRequestsQueue.add({}, {repeat: {
+    // every: 900000, //every 15 mins
+    every: 60000
+}});
+processPaymentRequestsQueue.process(async job => {
+    return await PaymentRequestsJob.job();
+});
 
 app.use('/api', router);
 // server listening 

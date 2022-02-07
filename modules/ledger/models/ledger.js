@@ -11,8 +11,8 @@ const LedgerSchema = new Schema({
     created_by: {type: Schema.Types.ObjectId, ref: 'Users'},
     updated_by: {type: Schema.Types.ObjectId, ref: 'Users'},
 }, {
-    // Use Unix timestamps (seconds since Jan 1st, 1970)
-    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
+    // TODO: Use Unix timestamps (seconds since Jan 1st, 1970)
+    timestamps: true
 });
 
 const ledger_model = mongoose.model("Ledger", LedgerSchema);
