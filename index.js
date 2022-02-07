@@ -7,6 +7,8 @@ const { LoginHandler } = require("./modules/users/handlers/loginHandler");
 const { UserHandler } = require("./modules/users/handlers/userHandler");
 const Queue = require('bull');
 const { PaymentRequestsJob } = require("./core/backgroundJobs/paymentRequestsJob");
+const { PaymentRequestsHandler } = require("./modules/paymentRequests/handlers/paymentRequestsHandler");
+const { LedgerHandler } = require("./modules/ledger/handlers/ledgerHandler");
 
 // const server = http.createServer(app);
 const router = express.Router();
@@ -20,6 +22,8 @@ UserHandler.init(router);
 RateCardHandler.init(router);
 TripHandler.init(router);
 PODHandler.init(router);
+PaymentRequestsHandler.init(router);
+LedgerHandler.init(router);
 
 //queueing background jobs
 const processPaymentRequestsQueue = new Queue('processPaymentRequests');
