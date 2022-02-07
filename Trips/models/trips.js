@@ -14,7 +14,7 @@ const TripsSchema = new Schema({
     end_kms: {type: Number},
     actual_kms: {type: Number},
     rate_card_id: {type: Schema.Types.ObjectId, ref: 'RateCard'},
-    changelog,
+    changelog: {type: Schema.Types.Array},
     created_by: {type: Schema.Types.ObjectId, ref: 'Users'},
     updated_by: {type: Schema.Types.ObjectId, ref: 'Users'},
 }, {
