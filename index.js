@@ -1,5 +1,6 @@
 const http = require("http");
 const { app, express } = require("./app");
+const { PODHandler } = require("./POD/handlers/pod_handler");
 const { RateCardHandler } = require("./RateCard/handlers/rate_card_handler");
 const { TripHandler } = require("./Trips/handlers/trip_handler");
 const { LoginHandler } = require("./Users/handlers/login_handler");
@@ -15,6 +16,7 @@ LoginHandler.init(router);
 UserHandler.init(router);
 RateCardHandler.init(router);
 TripHandler.init(router);
+PODHandler.init(router);
 
 app.use('/api', router);
 // server listening 

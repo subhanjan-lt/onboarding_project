@@ -129,7 +129,7 @@ class TripService {
                 created_by: req.user.user_id,
                 created_on: Date.now() / 1000
             });
-            trip.save();
+            await trip.save();
             return res.status(200).json(trip);
         } catch (err) {
             console.log(err);
@@ -176,7 +176,7 @@ class TripService {
                 created_by: req.user.user_id,
                 created_on: Date.now() / 1000
             });
-            trip.save();
+            await trip.save();
             return res.status(200).json({trip, rate_card: await rate_card_model.findById(trip.rate_card_id)});
         } catch (err) {
             console.log(err);
@@ -205,7 +205,7 @@ class TripService {
                 created_by: req.user.user_id,
                 created_on: Date.now() / 1000
             });
-            trip.save();
+            await trip.save();
             return res.status(200).json({trip, rate_card: await rate_card_model.findById(trip.rate_card_id)});
         } catch (err) {
             console.log(err);
