@@ -12,7 +12,7 @@ class TripHandler {
                 req.body.total_kms, 
                 req.user);
         } catch (err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -23,7 +23,7 @@ class TripHandler {
             const out = TripService.deactivate(req.body.trip_id, req.user);
             res.status(out.statusCode).send(out.data);
         }catch(err){
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -34,7 +34,7 @@ class TripHandler {
             const out = TripService.assign_rate_card(req.body.trip_id, req.body.user_id, req.user)
             res.status(out.statusCode).send(out.data);
         }catch(err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
     static assign_driver = async function (req, res) {
@@ -44,7 +44,7 @@ class TripHandler {
             const out = TripService.assign_driver(req.body.trip_id, req.body.rate_card_id, req.user)
             res.status(out.statusCode).send(out.data);
         }catch(err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -54,7 +54,7 @@ class TripHandler {
             const out = TripService.fetch_trips(req.user);
             res.status(out.statusCode).send(out.data);
         }catch(err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -68,7 +68,7 @@ class TripHandler {
                 req.body.actual_start_time);
             res.status(out.statusCode).send(out.data);
         }catch(err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -81,7 +81,7 @@ class TripHandler {
                 req.body.end_kms);
             res.status(out.statusCode).send(out.data);
         }catch(err) {
-            res.status(err.statusCode).send(err.data);
+            res.status(err.statusCode).send(err.msg);
         }
     }
 

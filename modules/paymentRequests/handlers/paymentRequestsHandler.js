@@ -8,7 +8,7 @@ class PaymentRequestsHandler {
             const out = PaymentRequestsService.payment_requests(req.query.pageSize, req.query.page);
             return res.status(out.statusCode).send(out.data);
         } catch (err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
     static init = function (router) {

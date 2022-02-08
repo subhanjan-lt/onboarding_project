@@ -16,7 +16,7 @@ class UserHandler {
                 req.user.user_id);
             return res.status(out.statusCode).send(out.data);
         } catch (err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -30,7 +30,7 @@ class UserHandler {
                 req.user.user_id);
                 return res.status(out.statusCode).send(out.data);
         } catch (err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -40,7 +40,7 @@ class UserHandler {
             if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
             const out = UserService.delete(req.body.user_id, req.user.user_id);
         } catch (err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 

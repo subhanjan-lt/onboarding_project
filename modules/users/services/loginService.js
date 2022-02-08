@@ -43,6 +43,7 @@ class LoginService {
             } else return {statusCode: 400, data: 'User not found'};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
@@ -55,6 +56,7 @@ class LoginService {
             else return {statusCode: 200, data: {success: true}};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

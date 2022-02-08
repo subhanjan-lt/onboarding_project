@@ -11,7 +11,7 @@ class RateCardHandler {
             const out = RateCardService.create(req.body.price, req.body.penalty, req.body.incentive, req.user);
             return res.status(out.statusCode).send(out.data);
         } catch(err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 

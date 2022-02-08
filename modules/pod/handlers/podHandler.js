@@ -11,7 +11,7 @@ class PODHandler {
             const out = PODService.create(req.user, req.body.trip_id, req.file)
             return res.status(out.statusCode).send(out.data);
         }catch(err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -22,7 +22,7 @@ class PODHandler {
             const out = PODService.process_pod(req.body.pod_id, req.body.approved, req.user)
             return res.status(out.statusCode).send(out.data);
         }catch(err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 

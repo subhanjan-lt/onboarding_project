@@ -25,6 +25,7 @@ class PODService {
             return {statusCode: 200, data: pod};
             } catch (err) {
                 console.log(err);
+                return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
@@ -60,6 +61,7 @@ class PODService {
             }
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

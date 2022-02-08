@@ -10,6 +10,7 @@ class LedgerService{
             res.status(200).json(ledger);                
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

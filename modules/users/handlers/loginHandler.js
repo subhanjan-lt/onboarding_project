@@ -10,7 +10,7 @@ class LoginHandler {
             const out = await LoginService.login(username, password);
             return res.status(out.statusCode).send(out.data);
         } catch(err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 
@@ -20,7 +20,7 @@ class LoginHandler {
             const out = await LoginService.logout(token);
             return res.status(out.statusCode).send(out.data);
         } catch (err) {
-            return res.status(err.statusCode).send(err.data);
+            return res.status(err.statusCode).send(err.msg);
         }
     }
 

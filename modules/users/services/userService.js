@@ -18,6 +18,7 @@ class UserService{
             return {statusCode: 200, data: newUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
@@ -34,6 +35,7 @@ class UserService{
             return {statusCode: 200, data: updatedUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
@@ -46,6 +48,7 @@ class UserService{
             return {statusCode: 200, data: updatedUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

@@ -12,6 +12,7 @@ class PaymentRequestsService {
             return {statusCode: 200, data: payment_requests};                
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

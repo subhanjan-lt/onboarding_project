@@ -52,6 +52,7 @@ class TripService {
             return {statusCode: 200, data: newTrip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -74,6 +75,7 @@ class TripService {
             return {statusCode: 200, data: trip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -100,6 +102,7 @@ class TripService {
 
         } catch(err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -128,6 +131,7 @@ class TripService {
             return {statusCode: 200, data:trip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -144,6 +148,7 @@ class TripService {
             return {statusCode: 200, data:result};
         } catch(err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -172,6 +177,7 @@ class TripService {
             return {status: 200, data: {trip, rate_card: await rate_card_model.findById(trip.rate_card_id)}};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
@@ -199,6 +205,7 @@ class TripService {
             return {statusCode: 200, data: {trip, rate_card: await rate_card_model.findById(trip.rate_card_id)}};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 }
