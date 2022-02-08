@@ -3,7 +3,7 @@ const users_model = require('../../users/models/users');
 const rate_card_model = require('../../rateCard/models/rateCard');
 
 class TripService {
-    static create = async function (req, res) {
+    static async create (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -57,7 +57,7 @@ class TripService {
         }
     };
 
-    static deactivate = async function (req, res) {
+    static async deactivate (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -80,7 +80,7 @@ class TripService {
         }
     };
 
-    static assign_rate_card = async function (req, res) {
+    static async assign_rate_card  (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -107,7 +107,7 @@ class TripService {
         }
     };
 
-    static assign_driver = async function(req, res) {
+    static async assign_driver (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -136,7 +136,7 @@ class TripService {
         }
     };
 
-    static fetch_trips = async function(req, res) {
+    static async fetch_trips (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
@@ -153,7 +153,7 @@ class TripService {
         }
     };
 
-    static start_trip = async function (req, res) {
+    static async start_trip (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
@@ -183,7 +183,7 @@ class TripService {
         }
     };
 
-    static end_trip = async function (req, res) {
+    static async end_trip (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');

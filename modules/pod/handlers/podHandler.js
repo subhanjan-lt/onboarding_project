@@ -4,7 +4,7 @@ const multer  = require('multer')
 const upload = multer({ dest: '/Users/lt/Documents/onboarding_project/modules/pod/uploads' })
 
 class PODHandler {
-    static init = function (router) {
+    static init (router) {
         router.put('/pod/create', [auth, upload.single('pod')], async function (req, res) {
             await PODService.create(req, res);
         });

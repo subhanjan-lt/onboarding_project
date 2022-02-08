@@ -5,7 +5,7 @@ const rate_card_model = require('../../rateCard/models/rateCard');
 const payment_requests_model = require('../../paymentRequests/models/paymentRequests');
 
 class PODService {
-    static create = async function (req, res) {
+    static async create (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
@@ -30,7 +30,7 @@ class PODService {
         }
     }
 
-    static process_pod = async function (req, res) {
+    static async process_pod  (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'PAYMENT_EXEC') return res.status(401).send('You are not authorized for this action');

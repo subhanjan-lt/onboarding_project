@@ -2,7 +2,7 @@ const auth = require('../../../core/middleware/auth');
 const { LoginService } = require('../services/loginService');
 
 class LoginHandler {
-    static init = function(router) {
+    static init (router) {
         router.post('/user/login', async function(req, res) {
             await LoginService.login(req, res);
         });

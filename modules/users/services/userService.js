@@ -2,7 +2,7 @@ const users_model = require('../models/users');
 const bcrypt = require('bcryptjs');
 
 class UserService{
-    static create = async function (req, res) {
+    static async create (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -26,7 +26,7 @@ class UserService{
         }
     }
 
-    static update_creds = async function (req, res) {
+    static async update_creds (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
@@ -46,7 +46,7 @@ class UserService{
         }
     }
 
-    static delete = async function (req, res) {
+    static async delete (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');

@@ -1,7 +1,7 @@
 const rate_card_model = require('../models/rateCard');
 
 class RateCardService {
-    static create = async function (req, res) {
+    static async reate (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.price && req.body.penalty && req.body.incentive)) 

@@ -1,7 +1,7 @@
 const payment_requests_model = require('../models/paymentRequests');
 
 class PaymentRequestsService {
-    static payment_requests = async function (req, res) {
+    static async payment_requests (req, res) {
         try {
             /*======== validity checks start ========*/
             if (req.user.role !== 'PAYMENT_EXEC') return res.status(401).send('You are not authorized for this action');

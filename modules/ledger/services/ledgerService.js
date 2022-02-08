@@ -1,7 +1,7 @@
 const ledger_model = require('../models/ledger');
 
 class LedgerService{
-    static ledger = async function(req, res) {
+    static  async ledger(req, res) {
         try {
             const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 0;
             const page = req.query.page ? parseInt(req.query.page) : 0;

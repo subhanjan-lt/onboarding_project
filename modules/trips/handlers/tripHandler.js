@@ -2,7 +2,7 @@ const auth = require('../../../core/middleware/auth');
 const { TripService } = require('../services/tripService');
 
 class TripHandler {
-    static init = function(router) {
+    static init (router) {
         router.put('/trip/create', auth, async function (req, res) {
             await TripService.create(req, res);
         });

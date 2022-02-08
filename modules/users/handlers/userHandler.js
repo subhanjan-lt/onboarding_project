@@ -2,7 +2,7 @@ const auth = require('../../../core/middleware/auth');
 const { UserService } = require('../services/userService');
 
 class UserHandler {
-    static init = function(router) {
+    static init (router) {
         router.put('/user/create', auth, async function (req, res) {
             await UserService.create(req, res);
         });

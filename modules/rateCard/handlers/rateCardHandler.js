@@ -3,7 +3,7 @@ const { RateCardService } = require('../services/rateCardService');
 
 
 class RateCardHandler {
-    static init = function (router) {
+    static init (router) {
         router.put('/rate_card/create', auth, async function (req, res) {
             await RateCardService.create(req, res);
         });
