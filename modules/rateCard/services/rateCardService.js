@@ -1,18 +1,16 @@
 const rate_card_model = require('../models/rateCard');
 
 class RateCardService {
-    static create = async function (req, res) {
+    static create = async function (price, penalty, incentive, admin) {
         try {
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!(req.body.price && req.body.penalty && req.body.incentive)) 
-                return res.status(400).send('Incomplete information entered');
+            
             
             const newRateCard = await rate_card_model.create({
-                price: req.body.price,
-                penalty: req.body.penalty,
-                incentive: req.body.incentive,
-                created_by: req.user.user_id,
-                updated_by: req.user.user_id,
+                price: price,
+                penalty: penalty,
+                incentive: incentive,
+                created_by: admin.user_id,
+                updated_by: admin.user_id,
             });
 
             return res.status(200).json(newRateCard);
