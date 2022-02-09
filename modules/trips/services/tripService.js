@@ -158,7 +158,7 @@ class TripService {
     };
 
 
-    static async start_trip = async function (admin, trip_id, start_kms, actual_start_time) {
+    static async start_trip (admin, trip_id, start_kms, actual_start_time) {
         try {
             /*======== validity checks start ========*/
             const driver = await users_model.findById(admin.user_id);
