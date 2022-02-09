@@ -1,7 +1,7 @@
 const auth = require('../../../core/middleware/auth');
 const { PODService } = require('../services/podService');
 const multer  = require('multer')
-const upload = multer({ dest: '/Users/lt/Documents/onboarding_project/modules/pod/uploads' })
+const upload = multer({ dest: '/home/jayantpaymentexec/onboarding_project/modules/pod/uploads' })
 
 class PODHandler {
     static init (router) {
