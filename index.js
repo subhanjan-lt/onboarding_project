@@ -32,7 +32,7 @@ const processPaymentRequestsQueue = new Queue('processPaymentRequests');
 processPaymentRequestsQueue.on('completed', (job, result) => {
     if (result && result.length() > 0) {
         //send socket messages to recipients of all successful payments
-        result.map(ledgerEntry => {
+        result.array.forEach(ledgerEntry => {
             io.sockets.to(ledgerEntry.user_id).emit(
                 'notifications',
                 `Amount of ${ledgerEntry.amount} rupees has been ${ledgerEntry.type}ED to your account`
@@ -61,4 +61,6 @@ io.use(socketAuth);
 io.on('connection', (socket) => {
     console.log(`Client with user_id ${socket.request.user.user_id} has connected`);
     socket.join(socket.request.user.user_id);
+
+    io.sockets.to(socket.request.user.user_id).emit('notifications', 'test');
 })
