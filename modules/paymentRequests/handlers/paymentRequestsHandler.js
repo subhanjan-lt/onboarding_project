@@ -6,7 +6,7 @@ class PaymentRequestsHandler {
     static async payment_requests (req, res) {
         try {
             if (req.user.role !== 'PAYMENT_EXEC') return res.status(401).send('You are not authorized for this action');
-            const out = PaymentRequestsService.payment_requests(req.query.pageSize, req.query.page);
+            const out = await PaymentRequestsService.payment_requests(req.query.pageSize, req.query.page);
             return res.status(out.statusCode).send(out.data);
         } catch (err) {
             return res.status(err.statusCode).send(err.msg);
