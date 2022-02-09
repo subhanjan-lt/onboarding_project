@@ -30,7 +30,7 @@ LedgerHandler.init(router);
 //queueing background jobs
 const processPaymentRequestsQueue = new Queue('processPaymentRequests');
 processPaymentRequestsQueue.on('completed', (job, result) => {
-    if (result && result.length() > 0) {
+    if (result && result.length > 0) {
         //send socket messages to recipients of all successful payments
         result.array.forEach(ledgerEntry => {
             io.sockets.to(ledgerEntry.user_id).emit(
