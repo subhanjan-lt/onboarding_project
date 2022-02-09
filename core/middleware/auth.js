@@ -15,6 +15,7 @@ const verifyToken = async function(req, res, next) {
         if (err instanceof jwt.TokenExpiredError && session && !session.logout_time) {
             session.logout_time = session.login_time + 3600; //TODO: extract this out as a constant (1h) expiry window of jwt
             await session.save();
+            return res.status(400).send("JWT key expired, please log back in");
         }
         return res.status(401).send("Invalid Token");
     }

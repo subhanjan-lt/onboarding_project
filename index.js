@@ -9,6 +9,8 @@ const Queue = require('bull');
 const { PaymentRequestsJob } = require("./core/backgroundJobs/paymentRequestsJob");
 const { PaymentRequestsHandler } = require("./modules/paymentRequests/handlers/paymentRequestsHandler");
 const { LedgerHandler } = require("./modules/ledger/handlers/ledgerHandler");
+const socket = require ('socket.io');
+const socketAuth = require('./core/middleware/socket');
 
 // const server = http.createServer(app);
 const router = express.Router();
@@ -28,6 +30,15 @@ LedgerHandler.init(router);
 //queueing background jobs
 const processPaymentRequestsQueue = new Queue('processPaymentRequests');
 processPaymentRequestsQueue.on('completed', (job, result) => {
+    if (result && result.length() > 0) {
+        //send socket messages to recipients of all successful payments
+        result.map(ledgerEntry => {
+            io.sockets.to(ledgerEntry.user_id).emit(
+                'notifications',
+                `Amount of ${ledgerEntry.amount} rupees has been ${ledgerEntry.type}ED to your account`
+            );
+        });
+    }
     console.log(`Job completed with result ${result}`);
 });
 processPaymentRequestsQueue.add({}, {repeat: {
@@ -40,6 +51,14 @@ processPaymentRequestsQueue.process(async job => {
 
 app.use('/api', router);
 // server listening 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+// Socket setup
+const io = socket(server);
+io.use(socketAuth);
+io.on('connection', (socket) => {
+    console.log(`Client with user_id ${socket.request.user.user_id} has connected`);
+    socket.join(socket.request.user.user_id);
+})
