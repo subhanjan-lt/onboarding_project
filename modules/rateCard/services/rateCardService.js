@@ -13,7 +13,7 @@ class RateCardService {
                 updated_by: admin.user_id,
             });
 
-            return res.status(200).json(newRateCard);
+            return {statusCode: 200, data: newRateCard};
 
         } catch (err) {
             console.log(err);
