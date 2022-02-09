@@ -2,63 +2,55 @@ const users_model = require('../models/users');
 const bcrypt = require('bcryptjs');
 
 class UserService{
-    static async create (req, res) {
+    static async create (name, phone, role, username, password, user_id) {
         try {
-            /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!(req.body.name && req.body.role && req.body.username && req.body.password))
-                return res.status(400).send('Incomplete information entered');
-            /*======== validity checks end ========*/
-            const encrypted_password = await bcrypt.hash(req.body.password, 10);
+            const encrypted_password = await bcrypt.hash(password, 10);
             const newUser = await users_model.create({
-                name: req.body.name,
-                phone: req.body.phone,
+                name: name,
+                phone: phone,
                 active: true,
-                role: req.body.role,
-                username: req.body.username,
+                role: role,
+                username: username,
                 password: encrypted_password,
-                created_by: req.user.user_id,
-                updated_by: req.user.user_id
+                created_by: user_id,
+                updated_by: user_id
             });
-            return res.status(200).json(newUser);
+            return {statusCode: 200, data: newUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
-    static async update_creds (req, res) {
+
+    static async update_creds (user_id, username, password, admin_id) {
         try {
-            /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
-            /*======== validity checks end ========*/
-            const updatedUser = await users_model.findById(req.body.user_id);
-            if (req.body.username) updatedUser.username = req.body.username;
-            if (req.body.password) {
-                const encrypted_password = await bcrypt.hash(req.body.password, 10);
+            const updatedUser = await users_model.findById(user_id);
+            if (username) updatedUser.username = username;
+            if (password) {
+                const encrypted_password = await bcrypt.hash(password, 10);
                 updatedUser.password = encrypted_password;
             }
-            if (req.body.username || req.body.password) updatedUser.updated_by = req.user.user_id;
+            if (username || password) updatedUser.updated_by = admin_id;
             await updatedUser.save();
-            return res.status(200).json(updatedUser);
+            return {statusCode: 200, data: updatedUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 
-    static async delete (req, res) {
+
+    static async delete (user_id, admin_id) {
         try {
-            /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
-            /*======== validity checks end ========*/
-            const updatedUser = await users_model.findByIdAndUpdate(req.body.user_id, {
+            const updatedUser = await users_model.findByIdAndUpdate(user_id, {
                 active: false, 
-                updated_by: req.user.user_id
+                updated_by: admin_id
             });
-            return res.status(200).json(updatedUser);
+            return {statusCode: 200, data: updatedUser};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     }
 }

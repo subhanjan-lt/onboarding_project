@@ -3,212 +3,216 @@ const users_model = require('../../users/models/users');
 const rate_card_model = require('../../rateCard/models/rateCard');
 
 class TripService {
-    static async create (req, res) {
+
+    static async create (assigned_to, rate_card_id, start_time, total_kms, admin) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!(req.body.start_time && req.body.total_kms)) return res.status(400).send('Incomplete information entered');
-            if (req.body.assigned_to) {
-                if (!req.body.rate_card_id) return res.status(400).send('Driver cannot be assigned to trip before rate_card');
-                const driver = await users_model.findById(req.body.assigned_to);
-                if (!(driver && driver.active)) return res.status(400).send("Driver ID entered doesn't exist, please onboard driver first");
-                if (driver.role !== 'DRIVER') return res.status(400).send("Trip can only be assigned to driver");
+            if (assigned_to) {
+                if (!rate_card_id) return {statusCode: 400, date: 'Driver cannot be assigned to trip before rate_card'};
+                const driver = await users_model.findById(assigned_to);
+                if (!(driver && driver.active)) return {statusCode: 400, data: "Driver ID entered doesn't exist, please onboard driver first"};
+                if (driver.role !== 'DRIVER') return {statusCode: 400, data: "Trip can only be assigned to driver"};
             } 
             /*======== validity checks end ========*/
             const newTrip = await trips_model.create({
                 status: 'CREATED',
                 active: true,
-                assigned_to: req.body.assigned_to,
-                start_time: req.body.start_time,
+                assigned_to: assigned_to,
+                start_time: start_time,
                 actual_start_time: null,
-                total_kms: req.body.total_kms,
+                total_kms: total_kms,
                 start_kms: null,
                 end_kms: null,
                 actual_kms: null,
-                rate_card_id: req.body.rate_card_id,
+                rate_card_id: rate_card_id,
                 changelog: [],
-                created_by: req.user.user_id,
-                updated_by: req.user.user_id
+                created_by: admin.user_id,
+                updated_by: admin.user_id
             });
             newTrip.changelog.push({
                 action: 'CREATED',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
-            if (req.body.rate_card_id) {
+            if (rate_card_id) {
                 newTrip.changelog.push({
                     action: 'ASSIGNED_RATE_CARD',
-                    created_by: req.user.user_id,
+                    created_by: admin.user_id,
                     created_on: Date.now() / 1000
                 });
             }
-            if (req.body.assigned_to) { 
+            if (assigned_to) { 
                 newTrip.status = 'ASSIGNED'; //TODO: use string consts
                 newTrip.changelog.push({
                     action: 'ASSIGNED_DRIVER',
-                    created_by: req.user.user_id,
+                    created_by: admin.user_id,
                     created_on: Date.now() / 1000
                 });
             } 
             await newTrip.save();
-            return res.status(200).json(newTrip);
+            return {statusCode: 200, data: newTrip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async deactivate (req, res) {
+
+    static async deactivate (trip_id, admin) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!req.body.trip_id) return res.status(400).send("Incomplete information entered");
-            const trip = await trips_model.findById(req.body.trip_id);
-            if (!(trip && trip.active)) res.status(400).send("Trip doesn't exist");
+            
+            const trip = await trips_model.findById(trip_id);
+            if (!(trip && trip.active)) return {statusCode: 400, data: "Trip doesn't exist"};
             /*======== validity checks end ========*/
             
             trip.active = false;
-            trip.updated_by = req.user.user_id;                
+            trip.updated_by = admin.user_id;                
             trip.changelog.push({
                 action: 'DEACTIVATED',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
             await trip.save();
-            return res.status(200).json(trip);
+            return {statusCode: 200, data: trip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async assign_rate_card  (req, res) {
+
+    static async assign_rate_card (trip_id, rate_card_id, admin) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!(req.body.trip_id && req.body.rate_card_id)) return res.status(400).send("Incomplete information entered");
-            const trip = await trips_model.findById(req.body.trip_id);
-            if (!(trip && trip.active)) res.status(400).send("Trip doesn't exist");
-            if (trip.status === 'IN_PROGRESS' || trip.status === 'COMPLETED') return res.status(400).send("Rate Card can't be assigned in this stage of the trip");
-            const rate_card = await rate_card_model.findById(req.body.rate_card_id);
-            if (!rate_card) res.status(400).send("Rate card doesn't exist");
+            
+            const trip = await trips_model.findById(trip_id);
+            if (!(trip && trip.active)) return {statusCode: 400, data: "Trip doesn't exist"};
+            if (trip.status === 'IN_PROGRESS' || trip.status === 'COMPLETED') return {statusCode: 400, data: "Rate Card can't be assigned in this stage of the trip"};
+            const rate_card = await rate_card_model.findById(rate_card_id);
+            if (!rate_card) return {statusCode: 400, data: "Rate card doesn't exist"};
             /*======== validity checks end ========*/
 
-            trip.rate_card_id = req.body.rate_card_id;
-            trip.updated_by = req.user.user_id;
+            trip.rate_card_id = rate_card_id;
+            trip.updated_by = admin.user_id;
             trip.changelog.push({
                 action: 'ASSIGNED_RATE_CARD',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
             await trip.save();
-            return res.status(200).json(trip);
+            return {statusCode: 200, data: trip};
 
         } catch(err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async assign_driver (req, res) {
+
+    static async assign_driver (trip_id, user_id, admin) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
-            if (!(req.body.trip_id && req.body.user_id)) return res.status(400).send('Incomplete information entered');
-            const trip = await trips_model.findById(req.body.trip_id);
-            if (!(trip && trip.active)) return res.status(400).send("Trip doesn't exist");
-            if (trip.status === 'IN_PROGRESS' || trip.status === 'COMPLETED') return res.status(400).send("Driver can't be assigned in this stage of the trip");
-            if (!trip.rate_card_id) return res.status(400).send('Driver cannot be assigned to trip before rate_card');
-            const driver = await users_model.findById(req.body.user_id);
-            if (!(driver && driver.active)) return res.status(400).send("Driver ID entered doesn't exist, please onboard driver first");
-            if (driver.role !== 'DRIVER') return res.status(400).send("Trip can only be assigned to driver");
+            
+            const trip = await trips_model.findById(trip_id);
+            if (!(trip && trip.active)) return {statusCode: 400, data: "Trip doesn't exist"};
+            if (trip.status === 'IN_PROGRESS' || trip.status === 'COMPLETED') return {statusCode: 400, data: "Driver can't be assigned in this stage of the trip"};
+            if (!trip.rate_card_id) return {statusCode: 400, data: 'Driver cannot be assigned to trip before rate_card'};
+            const driver = await users_model.findById(user_id);
+            if (!(driver && driver.active)) return {statusCode: 400, data: "Driver ID entered doesn't exist, please onboard driver first"};
+            if (driver.role !== 'DRIVER') return {statusCode: 400, data: "Trip can only be assigned to driver"};
             /*======== validity checks end ========*/
 
-            trip.assigned_to = req.body.user_id;
+            trip.assigned_to = user_id;
             trip.status = 'ASSIGNED';
-            trip.updated_by = req.user.user_id;
+            trip.updated_by = admin.user_id;
             trip.changelog.push({
                 action: 'ASSIGNED_DRIVER',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
             await trip.save();
-            return res.status(200).json(trip);
+            return {statusCode: 200, data:trip};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async fetch_trips (req, res) {
+
+    static async fetch_trips (admin) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
-            const driver = await users_model.findById(req.user.user_id);
-            if (!(driver && driver.active)) return res.status(400).send('This action is not available till onboarding is complete');
+            const driver = await users_model.findById(admin.user_id);
+            if (!(driver && driver.active)) return {statusCode: 400, data: 'This action is not available till onboarding is complete'};
             /*======== validity checks end ========*/
-            const trips = await trips_model.find({assigned_to: req.user.user_id});
+            const trips = await trips_model.find({assigned_to: admin.user_id});
             const result = await Promise.all(trips.map(async trip => {
                     return {trip, rate_card: await rate_card_model.findById(trip.rate_card_id)};
                 }));
-            return res.status(200).json(result);
+            return {statusCode: 200, data:result};
         } catch(err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async start_trip (req, res) {
+
+    static async start_trip (admin, trip_id, start_kms, actual_start_time) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
-            const driver = await users_model.findById(req.user.user_id);
-            if (!(driver && driver.active)) return res.status(400).send("This action is not available till onboarding is complete");
-            if (!(req.body.trip_id && req.body.start_kms !== undefined && req.body.actual_start_time)) return res.status(400).send('Incomplete information entered');
-            const trip = await trips_model.findById(req.body.trip_id);
-            if (!(trip && trip.active)) return res.status(400).send("Trip doesn't exist");
-            if (trip.status !== 'ASSIGNED') return res.status(400).send("Trip hasn't been assigned yet");
-            // console.log(trip.assigned_to.toString(), req.user.user_id);
-            if (trip.assigned_to.toString() !== req.user.user_id) return res.status(400).send("Trip hasn't been assigned to you");
+            const driver = await users_model.findById(admin.user_id);
+            if (!(driver && driver.active)) return {status:400, data: "This action is not available till onboarding is complete"};
+            const trip = await trips_model.findById(trip_id);
+            if (!(trip && trip.active)) return {status: 400, data: "Trip doesn't exist"};
+            if (trip.status !== 'ASSIGNED') return {status:400, data: "Trip hasn't been assigned yet"};
+            // console.log(trip.assigned_to.toString(), admin.user_id);
+            if (trip.assigned_to.toString() !== admin.user_id) return {status: 400, data: "Trip hasn't been assigned to you"};
             /*======== validity checks end ========*/
 
-            trip.start_kms = req.body.start_kms;
-            trip.actual_start_time = req.body.actual_start_time;
+            trip.start_kms = start_kms;
+            trip.actual_start_time = actual_start_time;
             trip.status = 'IN_PROGRESS';
-            trip.updated_by = req.user.user_id;
+            trip.updated_by = admin.user_id;
             trip.changelog.push({
                 action: 'TRIP_STARTED',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
             await trip.save();
-            return res.status(200).json({trip, rate_card: await rate_card_model.findById(trip.rate_card_id)});
+            return {status: 200, data: {trip, rate_card: await rate_card_model.findById(trip.rate_card_id)}};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 
-    static async end_trip (req, res) {
+
+    static async end_trip (admin, trip_id, end_kms) {
         try {
             /*======== validity checks start ========*/
-            if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
-            const driver = await users_model.findById(req.user.user_id);
-            if (!(driver && driver.active)) return res.status(400).send("This action is not available till onboarding is complete");
-            if (!(req.body.trip_id && req.body.end_kms)) return res.status(400).send('Incomplete information entered');
-            const trip = await trips_model.findById(req.body.trip_id);
-            if (!(trip && trip.active)) return res.status(400).send("Trip doesn't exist");
-            if (trip.status !== 'IN_PROGRESS') return res.status(400).send("Trip hasn't been started yet, please start trip first");
-            if (trip.assigned_to.toString() !== req.user.user_id) return res.status(400).send("Trip hasn't been assigned to you");
+            const driver = await users_model.findById(admin.user_id);
+            if (!(driver && driver.active)) return {statusCode: 400, data: "This action is not available till onboarding is complete"};
+            const trip = await trips_model.findById(trip_id);
+            if (!(trip && trip.active)) return {statusCode: 400, data: "Trip doesn't exist"};
+            if (trip.status !== 'IN_PROGRESS') return {statusCode: 400, data: "Trip hasn't been started yet, please start trip first"};
+            if (trip.assigned_to.toString() !== admin.user_id) return {statusCode: 400, data: "Trip hasn't been assigned to you"};
             /*======== validity checks end ========*/
 
-            trip.end_kms = req.body.end_kms;
+            trip.end_kms = end_kms;
             trip.actual_kms = trip.end_kms - trip.start_kms;
             trip.status = 'COMPLETED';
-            trip.updated_by = req.user.user_id;
+            trip.updated_by = admin.user_id;
             trip.changelog.push({
                 action: 'TRIP_ENDED',
-                created_by: req.user.user_id,
+                created_by: admin.user_id,
                 created_on: Date.now() / 1000
             });
             await trip.save();
-            return res.status(200).json({trip, rate_card: await rate_card_model.findById(trip.rate_card_id)});
+            return {statusCode: 200, data: {trip, rate_card: await rate_card_model.findById(trip.rate_card_id)}};
         } catch (err) {
             console.log(err);
+            return {statusCode: 500, data: {}, msg: err.message};
         }
     };
 }

@@ -22,6 +22,7 @@ class PaymentRequestsJob {
                 return ledgerEntry;
             } catch (err) {
                 console.log(err);
+                return {statusCode: 500, data: {}, msg: err.message};
             }
         }));
         return result;
