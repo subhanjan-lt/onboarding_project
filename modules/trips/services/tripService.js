@@ -3,7 +3,8 @@ const users_model = require('../../users/models/users');
 const rate_card_model = require('../../rateCard/models/rateCard');
 
 class TripService {
-    static create = async function (assigned_to, rate_card_id, start_time, total_kms, admin) {
+
+    static async create (assigned_to, rate_card_id, start_time, total_kms, admin) {
         try {
             /*======== validity checks start ========*/
             if (assigned_to) {
@@ -56,7 +57,8 @@ class TripService {
         }
     };
 
-    static deactivate = async function (trip_id, admin) {
+
+    static async deactivate (trip_id, admin) {
         try {
             /*======== validity checks start ========*/
             
@@ -79,7 +81,8 @@ class TripService {
         }
     };
 
-    static assign_rate_card = async function (trip_id, rate_card_id, admin) {
+
+    static async assign_rate_card (trip_id, rate_card_id, admin) {
         try {
             /*======== validity checks start ========*/
             
@@ -106,7 +109,8 @@ class TripService {
         }
     };
 
-    static assign_driver = async function(trip_id, user_id, admin) {
+
+    static async assign_driver (trip_id, user_id, admin) {
         try {
             /*======== validity checks start ========*/
             
@@ -135,7 +139,8 @@ class TripService {
         }
     };
 
-    static fetch_trips = async function(admin) {
+
+    static async fetch_trips (admin) {
         try {
             /*======== validity checks start ========*/
             const driver = await users_model.findById(admin.user_id);
@@ -152,7 +157,8 @@ class TripService {
         }
     };
 
-    static start_trip = async function (admin, trip_id, start_kms, actual_start_time) {
+
+    static async start_trip = async function (admin, trip_id, start_kms, actual_start_time) {
         try {
             /*======== validity checks start ========*/
             const driver = await users_model.findById(admin.user_id);
@@ -181,7 +187,8 @@ class TripService {
         }
     };
 
-    static end_trip = async function (admin, trip_id, end_kms) {
+
+    static async end_trip (admin, trip_id, end_kms) {
         try {
             /*======== validity checks start ========*/
             const driver = await users_model.findById(admin.user_id);

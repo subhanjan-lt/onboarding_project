@@ -1,7 +1,7 @@
 const payment_requests_model = require('../models/paymentRequests');
 
 class PaymentRequestsService {
-    static payment_requests = async function (pageSize, page) {
+    static async payment_requests (pageSize, page) {
         try {
             /*======== validity checks start ========*/
             

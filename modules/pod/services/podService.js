@@ -5,7 +5,7 @@ const rate_card_model = require('../../rateCard/models/rateCard');
 const payment_requests_model = require('../../paymentRequests/models/paymentRequests');
 
 class PODService {
-    static create = async function (admin, trip_id, file) {
+    static async create(admin, trip_id, file) {
         try {
             /*======== validity checks start ========*/
             const driver = await users_model.findById(admin.user_id);
@@ -29,7 +29,7 @@ class PODService {
         }
     }
 
-    static process_pod = async function (pod_id, approved, admin) {
+    static async process_pod (pod_id, approved, admin) {
         try {
             /*======== validity checks start ========*/
             const pod = await pod_model.findById(pod_id);

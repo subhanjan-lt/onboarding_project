@@ -2,7 +2,7 @@ const auth = require('../../../core/middleware/auth');
 const { LoginService } = require('../services/loginService');
 
 class LoginHandler {
-    static login = async function (req, res) {
+    static async login (req, res) {
         try {
             const { username, password } = req.body;
             if (!(username && password)) return res.status(400).send('Incomplete credentials entered');
@@ -14,7 +14,7 @@ class LoginHandler {
         }
     }
 
-    static logout = async function (req, res) {
+    static async logout (req, res) {
         try {
             const token = req.headers["token"];
             const out = await LoginService.logout(token);
@@ -24,7 +24,7 @@ class LoginHandler {
         }
     }
 
-    static init = function(router) {
+    static init (router) {
         router.post('/user/login', LoginHandler.login);
 
         router.post('/user/logout', auth, LoginHandler.logout);

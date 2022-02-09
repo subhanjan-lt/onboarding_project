@@ -3,7 +3,7 @@ const { RateCardService } = require('../services/rateCardService');
 
 
 class RateCardHandler {
-    static create = async function (req, res) {
+    static async create (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.price && req.body.penalty && req.body.incentive)) 
@@ -15,7 +15,7 @@ class RateCardHandler {
         }
     }
 
-    static init = function (router) {
+    static init (router) {
         router.put('/rate_card/create', auth, RateCardHandler.create);
     }
 }

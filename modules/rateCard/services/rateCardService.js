@@ -1,7 +1,7 @@
 const rate_card_model = require('../models/rateCard');
 
 class RateCardService {
-    static create = async function (price, penalty, incentive, admin) {
+    static async create (price, penalty, incentive, admin) {
         try {
             
             

@@ -2,7 +2,7 @@ const users_model = require('../models/users');
 const bcrypt = require('bcryptjs');
 
 class UserService{
-    static create = async function (name, phone, role, username, password, user_id) {
+    static async create (name, phone, role, username, password, user_id) {
         try {
             const encrypted_password = await bcrypt.hash(password, 10);
             const newUser = await users_model.create({
@@ -22,7 +22,8 @@ class UserService{
         }
     }
 
-    static update_creds = async function (user_id, username, password, admin_id) {
+
+    static async update_creds (user_id, username, password, admin_id) {
         try {
             const updatedUser = await users_model.findById(user_id);
             if (username) updatedUser.username = username;
@@ -39,7 +40,8 @@ class UserService{
         }
     }
 
-    static delete = async function (user_id, admin_id) {
+
+    static async delete (user_id, admin_id) {
         try {
             const updatedUser = await users_model.findByIdAndUpdate(user_id, {
                 active: false, 

@@ -1,7 +1,7 @@
 const { LedgerService } = require('../services/ledgerService');
 
 class LedgerHandler {
-    static init = function (router) {
+    static init (router) {
         router.get('/ledger/', async function (req, res) {
            await LedgerService.ledger(req, res);
         });

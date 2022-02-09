@@ -2,7 +2,7 @@ const auth = require('../../../core/middleware/auth');
 const { TripService } = require('../services/tripService');
 
 class TripHandler {
-    static create = async function (req, res) {
+    static async create (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.start_time && req.body.total_kms)) return res.status(400).send('Incomplete information entered');
@@ -16,7 +16,7 @@ class TripHandler {
         }
     }
 
-    static deactivate = async function (req, res) {
+    static async deactivate (req, res) {
         try{
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!req.body.trip_id) return res.status(400).send("Incomplete information entered");
@@ -27,7 +27,7 @@ class TripHandler {
         }
     }
 
-    static assign_rate_card = async function (req, res) {
+    static async assign_rate_card (req, res) {
         try{
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.trip_id && req.body.rate_card_id)) return res.status(400).send("Incomplete information entered");
@@ -37,7 +37,7 @@ class TripHandler {
             res.status(err.statusCode).send(err.msg);
         }
     }
-    static assign_driver = async function (req, res) {
+    static async assign_driver (req, res) {
         try{
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.trip_id && req.body.user_id)) return res.status(400).send('Incomplete information entered');
@@ -48,7 +48,7 @@ class TripHandler {
         }
     }
 
-    static fetch_trips = async function (req, res) {
+    static async fetch_trips (req, res) {
         try{
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
             const out = TripService.fetch_trips(req.user);
@@ -58,7 +58,7 @@ class TripHandler {
         }
     }
 
-    static start_trip = async function (req, res) {
+    static async start_trip (req, res) {
         try{
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.trip_id && req.body.start_kms !== undefined && req.body.actual_start_time)) return res.status(400).send('Incomplete information entered');
@@ -72,7 +72,7 @@ class TripHandler {
         }
     }
 
-    static end_trip = async function (req, res) {
+    static async end_trip (req, res) {
         try{
             if (req.user.role !== 'DRIVER') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.trip_id && req.body.end_kms)) return res.status(400).send('Incomplete information entered');
@@ -85,7 +85,7 @@ class TripHandler {
         }
     }
 
-    static init = function(router) {
+    static init (router) {
         router.put('/trip/create', auth, TripHandler.create);
 
         router.post('/trip/deactivate', auth, TripHandler.deactivate);

@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class LoginService {
-    static login = async function (username, password) {
+    static async login (username, password) {
         try {
 
             const user = await users_model.findOne({username: username});
@@ -47,8 +47,9 @@ class LoginService {
         }
     }
 
-    static logout = async function (token) {
+    static async logout (token) {
         try {
+            const token = req.headers["token"];
             const currSession = await login_history_model.findOneAndUpdate({secret_key: token}, {logout_time: Date.now() / 1000});
             if (!currSession) {
                 return {statusCode: 400, data: 'User is not logged into system, please login first'}

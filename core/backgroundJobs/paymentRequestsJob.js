@@ -3,7 +3,7 @@ const trips_model = require('../../modules/trips/models/trips');
 const ledger_model = require('../../modules/ledger/models/ledger');
 
 class PaymentRequestsJob {
-    static job = async function () {
+    static async job () {
         const pendingPaymentRequests = await payment_requests_model.find({status: 'CREATED'}).sort({createdAt: 'ascending'});
         const result = await Promise.all(pendingPaymentRequests.map(async pendingPaymentRequest => {
             const total = pendingPaymentRequest.trip_amount + 

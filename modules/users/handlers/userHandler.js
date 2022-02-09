@@ -3,7 +3,8 @@ const { LoginService } = require('../services/loginService');
 const { UserService } = require('../services/userService');
 
 class UserHandler {
-    static create = async function (req, res) {
+
+    static async create (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!(req.body.name && req.body.role && req.body.username && req.body.password))
@@ -20,7 +21,7 @@ class UserHandler {
         }
     }
 
-    static update_creds = async function (req, res) {
+    static async update_creds (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
@@ -34,7 +35,7 @@ class UserHandler {
         }
     }
 
-    static delete = async function (req, res) {
+    static async delete (req, res) {
         try {
             if (req.user.role !== 'ADMIN') return res.status(401).send('You are not authorized for this action');
             if (!req.body.user_id) return res.status(400).send('Incomplete information entered');
@@ -44,7 +45,7 @@ class UserHandler {
         }
     }
 
-    static init = function(router) {
+    static init (router) {
         router.put('/user/create', auth, UserHandler.create);
 
         router.post('/user/update_creds', auth, UserHandler.update_creds);
