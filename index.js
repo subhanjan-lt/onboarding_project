@@ -32,8 +32,8 @@ const processPaymentRequestsQueue = new Queue('processPaymentRequests');
 processPaymentRequestsQueue.on('completed', (job, result) => {
     if (result && result.length > 0) {
         //send socket messages to recipients of all successful payments
-        result.array.forEach(ledgerEntry => {
-            io.sockets.to(ledgerEntry.user_id).emit(
+        result.forEach(ledgerEntry => {
+            io.sockets.to(ledgerEntry.user_id.toString()).emit(
                 'notifications',
                 `Amount of ${ledgerEntry.amount} rupees has been ${ledgerEntry.type}ED to your account`
             );
@@ -42,8 +42,7 @@ processPaymentRequestsQueue.on('completed', (job, result) => {
     console.log(`Job completed with result ${result}`);
 });
 processPaymentRequestsQueue.add({}, {repeat: {
-    // every: 900000, //every 15 mins
-    every: 60000
+    every: 900000, //every 15 mins
 }});
 processPaymentRequestsQueue.process(async job => {
     return await PaymentRequestsJob.job();
